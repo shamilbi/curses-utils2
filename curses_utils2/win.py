@@ -60,9 +60,6 @@ def ask_delete(screen: curses.window, color: int = 0) -> bool:
     try:
         ch = win.getch()
         return ch == ord('Y')
-        # if ch == ord('Y'):
-        #     return True
-        # return False
     except curses.error:
         return False
     finally:
