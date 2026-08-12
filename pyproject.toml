@@ -7,8 +7,8 @@ authors = [
 readme = {file = "README.rst", content-type = "text/x-rst"}
 urls.homepage = 'https://github.com/shamilbi/curses-utils2'
 
-license = 'GPL-2.0+'
-license-files = ["LICENSE.txt"]
+license = 'MIT'
+license-files = ["LICENSE"]
 
 requires-python = ">=3.9"
 dependencies = [
