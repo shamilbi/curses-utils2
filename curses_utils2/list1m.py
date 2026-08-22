@@ -16,11 +16,10 @@ class List1m(List):
 
     def __init__(
         self,
-        win: curses.window,
         proto: ListProto1m,
         current_color: int = curses.A_BOLD,
     ):
-        super().__init__(win, proto, current_color)
+        super().__init__(proto, current_color)
         self.proto: ListProto1m = proto
 
     def move_up(self, i: int):
