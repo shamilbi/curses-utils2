@@ -16,25 +16,25 @@ class ListProto3(Protocol):
         pass
 
 
-class List3:
+class List3:  # pylint: disable=attribute-defined-outside-init
     'List + every record projects to <height> window lines'
 
     def __init__(
         self,
-        win: curses.window,
         proto: ListProto3,
         height: int = 1,
         current_color: int = curses.A_BOLD,
     ):
-        self.win = win
         self.height = height
         self.proto = proto
         self.current_color = current_color
 
-        self.win.keypad(True)
-
         self.cur = 0  # cursor y, = 0..(maxy // height), real cursor = cur * height
         self.idx = 0  # source index
+
+    def set_win(self, win: curses.window):
+        self.win = win
+        self.win.keypad(True)
 
     def addstr(self, i: int, g: Generator[str], attr: int = 0):
         i2 = i * self.height
@@ -62,6 +62,8 @@ class List3:
             rows //= self.height
             if not self.idx < len_:  # deleted
                 self.idx = len_ - 1
+            if not self.cur < rows:  # new win < old win
+                self.cur = rows - 1
             if (rows - self.cur) > (di := len_ - self.idx):
                 # gap at bottom
                 self.cur = rows - di
