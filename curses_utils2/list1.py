@@ -15,7 +15,7 @@ class ListProto(Protocol):
         pass
 
 
-class List:
+class List:  # pylint: disable=attribute-defined-outside-init
     '''
     A projection of an array of records r0...rX to a window lines of string s0...sY
     where si = get_record_str(j) = rj -> str, s(i+1) = get_record_str(j+1), j < records_len()
@@ -24,18 +24,18 @@ class List:
 
     def __init__(
         self,
-        win: curses.window,
         proto: ListProto,
         current_color: int = curses.A_BOLD,
     ):
-        self.win = win
         self.proto = proto
         self.current_color = current_color
 
-        self.win.keypad(True)
-
         self.cur = 0  # cursor y
         self.idx = 0  # source index
+
+    def set_win(self, win: curses.window):
+        self.win = win
+        self.win.keypad(True)
 
     def refresh(self):
         self.win.erase()
@@ -44,6 +44,8 @@ class List:
             rows, _ = self.win.getmaxyx()
             if not self.idx < len_:  # deleted
                 self.idx = len_ - 1
+            if not self.cur < rows:  # new win < old win
+                self.cur = rows - 1
             if (rows - self.cur) > (di := len_ - self.idx):
                 # gap at bottom
                 self.cur = rows - di
