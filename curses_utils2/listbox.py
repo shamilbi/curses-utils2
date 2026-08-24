@@ -37,9 +37,10 @@ class ListBox:
         win2 = win.derwin(rows - 2 - self.header, cols - 4, 1 + self.header, 2)
         self.list_.set_win(win2)
 
-    def refresh(self, header: str):
+    def refresh(self, header: str = ''):
         self.win.erase()
-        win_addstr(self.win, 1, 2, header)
+        if self.header:
+            win_addstr(self.win, 1, 2, header)
         self.win.box()
         self.win.refresh()
 
