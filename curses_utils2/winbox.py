@@ -16,9 +16,9 @@ class WinBox:
         'offy: y offset, offx: x offset'
         self.body = body
         self.offy, self.offx = offy, offx
+        self.win: curses.window | None = None
 
     def set_win(self, win: curses.window | None):
-        # pylint: disable=attribute-defined-outside-init
         self.win = win
 
         if not win:
