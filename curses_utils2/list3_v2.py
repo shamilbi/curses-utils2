@@ -39,8 +39,16 @@ class List3v2(WinProto):
 
     def set_win(self, win: curses.window | None):
         self.win = win
-        if win:
-            win.keypad(True)
+
+        if not win:
+            return
+
+        rows, _ = win.getmaxyx()
+        if rows < self.height:
+            self.win = None
+            return
+
+        win.keypad(True)
 
     def addstr(self, i: int, g: Generator[str], attr: int = 0):
         if not self.win:
@@ -123,8 +131,8 @@ class List3v2(WinProto):
             self.cur += 1
         else:
             self.win.move(0, 0)
-            self.win.deleteln()
-            self.win.deleteln()
+            for i in range(self.height):
+                self.win.deleteln()
             self.cur = rows - 1
         self.addstr(self.cur, next_s, attr=self.current_color)
         self.idx += 1
