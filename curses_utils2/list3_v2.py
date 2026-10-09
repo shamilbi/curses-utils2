@@ -131,7 +131,7 @@ class List3v2(WinProto):
             self.cur += 1
         else:
             self.win.move(0, 0)
-            for i in range(self.height):
+            for _ in range(self.height):
                 self.win.deleteln()
             self.cur = rows - 1
         self.addstr(self.cur, next_s, attr=self.current_color)
