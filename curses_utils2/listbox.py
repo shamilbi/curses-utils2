@@ -1,3 +1,5 @@
+# deprecated: use winbox.py
+
 import curses
 from typing import Protocol
 

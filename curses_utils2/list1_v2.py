@@ -1,3 +1,5 @@
+# deprecated: use list3_v2.py
+
 from __future__ import annotations
 
 import curses

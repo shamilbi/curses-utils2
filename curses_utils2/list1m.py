@@ -1,3 +1,5 @@
+# deprecated: use list3m.py
+
 import curses
 
 from .list1 import List, ListProto

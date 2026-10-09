@@ -1,3 +1,5 @@
+# deprecated: use list3_v2.py
+
 import curses
 from collections.abc import Generator
 from typing import Protocol
