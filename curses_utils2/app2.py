@@ -26,6 +26,9 @@ class AppProto(Protocol):
     def handle_key(self, ch: int) -> str | None:  # switch to another app?
         pass
 
+    def run(self):
+        pass
+
 
 class AppSwitchProto(Protocol):
     screen: curses.window
@@ -35,6 +38,9 @@ class AppSwitchProto(Protocol):
         pass
 
     def input_search(self, prompt: str) -> tuple[bool, str]:  # ok, search str
+        pass
+
+    def get_info(self, about: str) -> dict:
         pass
 
 
@@ -125,9 +131,9 @@ class AppSwitch(AppSwitchProto):
         return (False, '')
 
     def run(self):
-        self.app.sigwinch_handler()  # create windows, refresh all
+        self.app.run()  # create records, create windows, refresh all
         for ch in self.getch():
             key = self.app.handle_key(ch)
             if key in self.apps:
                 self.app = self.apps[key]
-                self.app.sigwinch_handler()  # create windows, refresh all
+                self.app.run()
