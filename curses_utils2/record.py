@@ -44,11 +44,13 @@ def record2stream(fp, r: RecordProto, comment: str = ''):
         fp.write('\n')
 
     first = True
-    for _, s, value, _ in r.form_fields():
+    for _, s, value, type_ in r.form_fields():
         if first:
             first = False
         else:
             fp.write('\n')
+        if type_ == Text2Field.MULTI:
+            value = text2str(value)
         fp.write(f'{s}:\n{value}\n')
 
 
