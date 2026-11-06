@@ -1,6 +1,6 @@
 import curses
 import os
-from collections.abc import Callable
+from collections.abc import Callable, Generator
 
 from .win import set_terminal_title
 
@@ -27,6 +27,16 @@ class RowString:
                 s += f'{v[:w]:<{w}} '
         s = s.rstrip()  # last item stripped
         return s
+
+
+def chunkstring(s: str, chunk_len: int) -> Generator[str]:
+    len_ = len(s)
+    i = 0
+    while True:
+        yield s[i : i + chunk_len]  # works even if s=''
+        i += chunk_len
+        if not i < len_:
+            break
 
 
 def start_curses_app(
