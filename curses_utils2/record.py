@@ -20,7 +20,7 @@ class RecordProto(Protocol):
     def form_fields(self) -> Iterable[tuple[str, str, Callable[[Self], str | int], Text2Field]]:
         'id, title, record -> value, type'
 
-    def set_dict(self, d: dict) -> Self:
+    def set_dict(self, d: dict):
         pass
 
     def as_dict(self) -> dict:
@@ -36,7 +36,13 @@ def text2str(text: str) -> str:
     return s
 
 
-def record2stream(fp, r: RecordProto):
+def record2stream(fp, r: RecordProto, comment: str = ''):
+    if comment:
+        # comment
+        for s in comment.splitlines():
+            fp.write(f'# {s}\n')
+        fp.write('\n')
+
     first = True
     for _, s, f, _ in r.form_fields():
         if first:
@@ -46,15 +52,15 @@ def record2stream(fp, r: RecordProto):
         fp.write(f'{s}:\n{f(r)}\n')
 
 
-def record2str(r: RecordProto) -> str:
+def record2str(r: RecordProto, comment: str = '') -> str:
     with io.StringIO() as fp:
-        record2stream(fp, r)
+        record2stream(fp, r, comment=comment)
         return fp.getvalue()
 
 
-def record2file(fpath: str, r: RecordProto):
+def record2file(fpath: str, r: RecordProto, comment: str = ''):
     with open(fpath, 'w', encoding='utf-8') as fp:
-        record2stream(fp, r)
+        record2stream(fp, r, comment=comment)
 
 
 def stream2dict(fp, r: RecordProto) -> dict:
@@ -95,9 +101,9 @@ def file2record(fpath: str, r: RecordProto):
     r.set_dict(d)
 
 
-def edit_record(r: RecordProto) -> bool:
+def edit_record(r: RecordProto, comment: str = '') -> bool:
     with create_memfd2('tmp') as (_, fpath):
-        record2file(fpath, r)
+        record2file(fpath, r, comment=comment)
         t1 = os.path.getmtime(fpath)
         subprocess.run(['vim', fpath], check=False)
         t2 = os.path.getmtime(fpath)
