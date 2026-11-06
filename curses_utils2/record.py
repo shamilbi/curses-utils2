@@ -3,9 +3,9 @@ from __future__ import annotations
 import io
 import os
 import subprocess
-from collections.abc import Callable, Iterable
+from collections.abc import Iterable
 from enum import IntEnum
-from typing import Protocol, Self
+from typing import Protocol
 
 from .file_utils import create_memfd2
 
@@ -17,10 +17,10 @@ class Text2Field(IntEnum):
 
 
 class RecordProto(Protocol):
-    def form_fields(self) -> Iterable[tuple[str, str, Callable[[Self], str | int], Text2Field]]:
-        'id, title, record -> value, type'
+    def form_fields(self) -> Iterable[tuple[str, str, str, Text2Field]]:
+        'id, title, value, type'
 
-    def set_dict(self, d: dict):
+    def set_dict(self, d: dict) -> bool:
         pass
 
     def as_dict(self) -> dict:
@@ -44,12 +44,12 @@ def record2stream(fp, r: RecordProto, comment: str = ''):
         fp.write('\n')
 
     first = True
-    for _, s, f, _ in r.form_fields():
+    for _, s, value, _ in r.form_fields():
         if first:
             first = False
         else:
             fp.write('\n')
-        fp.write(f'{s}:\n{f(r)}\n')
+        fp.write(f'{s}:\n{value}\n')
 
 
 def record2str(r: RecordProto, comment: str = '') -> str:
@@ -96,9 +96,9 @@ def file2dict(fpath: str, r: RecordProto) -> dict:
         return stream2dict(fp, r)
 
 
-def file2record(fpath: str, r: RecordProto):
+def file2record(fpath: str, r: RecordProto) -> bool:
     d = file2dict(fpath, r)
-    r.set_dict(d)
+    return r.set_dict(d)
 
 
 def edit_record(r: RecordProto, comment: str = '') -> bool:
@@ -108,6 +108,5 @@ def edit_record(r: RecordProto, comment: str = '') -> bool:
         subprocess.run(['vim', fpath], check=False)
         t2 = os.path.getmtime(fpath)
         if t1 != t2:
-            file2record(fpath, r)  # r changed
-            return True
+            return file2record(fpath, r)
     return False
