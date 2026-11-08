@@ -23,9 +23,6 @@ class RecordProto(Protocol):
     def set_dict(self, d: dict) -> bool:
         pass
 
-    def as_dict(self) -> dict:
-        pass
-
 
 def text2str(text: str) -> str:
     '\r\n -> \n, \t -> spaces'
