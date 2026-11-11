@@ -2,6 +2,8 @@ import curses
 import os
 from collections.abc import Callable, Generator
 
+from wcwidth import clip, ljust
+
 from .win import set_terminal_title
 
 
@@ -17,16 +19,15 @@ class RowString:
         self.widths = widths
 
     def value(self, *values: str):
-        # min_ = min(len(self.widths), len(values))
-        s = ''
+        arr: list[str] = []
         for w, v in zip(self.widths, values):
             if not w:
                 # last value
-                s += v
+                arr.append(v)
             else:
-                s += f'{v[:w]:<{w}} '
-        s = s.rstrip()  # last item stripped
-        return s
+                arr.append(clip(ljust(v, w), end=w - 1))
+        s = ' '.join(arr)
+        return s.rstrip()  # last item stripped
 
 
 def chunkstring(s: str, chunk_len: int) -> Generator[str]:
