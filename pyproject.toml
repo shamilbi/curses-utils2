@@ -12,6 +12,7 @@ license-files = ["LICENSE"]
 
 requires-python = ">=3.9"
 dependencies = [
+    'wcwidth',
 ]
 
 dynamic = ["version"]
