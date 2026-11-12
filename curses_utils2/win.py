@@ -2,6 +2,8 @@ import curses
 import curses.ascii
 import sys
 
+from wcwidth import center, clip, ljust, rjust
+
 
 def win_addstr(
     win: curses.window,
@@ -16,11 +18,13 @@ def win_addstr(
     try:
         _, cols = win.getmaxyx()
         cols2 = cols - col - border
-        s = s[:cols2]
+        s = clip(s, end=cols2)
         if align == 0:
-            s = f'{s:^{cols2}}'
+            s = center(s, cols2)
         elif align > 0:
-            s = f'{s:>{cols2}}'
+            s = rjust(s, cols2)
+        else:
+            s = ljust(s, cols2)
         win.addstr(row, col, s, attr)
     except curses.error:
         # https://docs.python.org/3/library/curses.html#curses.window.addstr
