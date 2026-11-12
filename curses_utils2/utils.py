@@ -2,7 +2,7 @@ import curses
 import os
 from collections.abc import Callable, Generator
 
-from wcwidth import clip, ljust
+from wcwidth import clip, ljust, width
 
 from .win import set_terminal_title
 
@@ -31,10 +31,10 @@ class RowString:
 
 
 def chunkstring(s: str, chunk_len: int) -> Generator[str]:
-    len_ = len(s)
+    len_ = width(s)
     i = 0
     while True:
-        yield s[i : i + chunk_len]  # works even if s=''
+        yield clip(s, start=i, end=i + chunk_len)  # works even if s=''
         i += chunk_len
         if not i < len_:
             break
